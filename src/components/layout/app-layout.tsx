@@ -19,6 +19,7 @@ const pageTitles: Record<string, string> = {
   "/doctors/settlements": "Doctor Settlements",
   "/emr": "Electronic Medical Records",
   "/prescriptions": "Prescriptions",
+  "/pharmacy": "Pharmacy Inventory",
   "/billing/invoices": "Invoices",
   "/billing/payments": "Payments",
   "/billing/refunds": "Refunds",

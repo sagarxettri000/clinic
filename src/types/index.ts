@@ -325,6 +325,41 @@ export interface DoctorSettlement {
   updatedAt: Date
 }
 
+export interface Medicine {
+  id: string
+  name: string
+  genericName: string | null
+  category: string | null
+  brand: string | null
+  strength: string | null
+  unit: string
+  purchasePrice: number
+  sellingPrice: number
+  stockQuantity: number
+  reorderLevel: number
+  batchNumber: string | null
+  expiryDate: Date | null
+  supplier: string | null
+  location: string | null
+  notes: string | null
+  isActive: number
+  createdAt: Date
+  updatedAt: Date
+}
+
+export interface StockMovement {
+  id: string
+  medicineId: string
+  type: 'STOCK_IN' | 'STOCK_OUT' | 'ADJUSTMENT'
+  quantity: number
+  previousStock: number
+  newStock: number
+  referenceNumber: string | null
+  notes: string | null
+  createdById: string | null
+  createdAt: Date
+}
+
 export interface WhatsAppMessage {
   id: string
   patientId: string | null

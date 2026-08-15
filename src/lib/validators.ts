@@ -239,6 +239,40 @@ export const followUpCompleteSchema = z.object({
   nextActionDetails: znull(z.string().optional()),
 })
 
+export const medicineSchema = z.object({
+  name: z.string().min(1, 'Medicine name is required'),
+  genericName: znull(z.string().optional()),
+  category: znull(z.string().optional()),
+  brand: znull(z.string().optional()),
+  strength: znull(z.string().optional()),
+  unit: znull(z.string().default('TABLET')),
+  purchasePrice: znull(
+    z.number().min(0, 'Purchase price cannot be negative').default(0)
+  ),
+  sellingPrice: znull(
+    z.number().min(0, 'Selling price cannot be negative').default(0)
+  ),
+  stockQuantity: znull(
+    z.number().int().min(0, 'Stock cannot be negative').default(0)
+  ),
+  reorderLevel: znull(
+    z.number().int().min(0, 'Reorder level cannot be negative').default(10)
+  ),
+  batchNumber: znull(z.string().optional()),
+  expiryDate: znull(z.string().optional()),
+  supplier: znull(z.string().optional()),
+  location: znull(z.string().optional()),
+  notes: znull(z.string().optional()),
+  isActive: znull(z.number().default(1)),
+})
+
+export const stockMovementSchema = z.object({
+  type: z.enum(['STOCK_IN', 'STOCK_OUT', 'ADJUSTMENT']),
+  quantity: z.number().int().positive('Quantity must be a positive number'),
+  notes: znull(z.string().optional()),
+  referenceNumber: znull(z.string().optional()),
+})
+
 export type PatientInput = z.infer<typeof patientSchema>
 export type DoctorInput = z.infer<typeof doctorSchema>
 export type AppointmentInput = z.infer<typeof appointmentSchema>
@@ -252,3 +286,5 @@ export type UserInput = z.infer<typeof userSchema>
 export type LoginInput = z.infer<typeof loginSchema>
 export type FollowUpInput = z.infer<typeof followUpSchema>
 export type FollowUpCompleteInput = z.infer<typeof followUpCompleteSchema>
+export type MedicineInput = z.infer<typeof medicineSchema>
+export type StockMovementInput = z.infer<typeof stockMovementSchema>

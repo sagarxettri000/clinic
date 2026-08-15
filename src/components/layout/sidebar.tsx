@@ -89,6 +89,13 @@ const navigation: NavSection[] = [
     permission: { module: "encounters", action: "view" },
   },
   {
+    title: "Pharmacy",
+    items: [
+      { label: "Inventory", href: "/pharmacy", icon: Pill },
+    ],
+    permission: { module: "pharmacy", action: "view" },
+  },
+  {
     title: "Billing",
     items: [
       { label: "Invoices", href: "/billing/invoices", icon: Receipt },

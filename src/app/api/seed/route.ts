@@ -62,6 +62,10 @@ const permissions = [
   { module: 'services', action: 'create' },
   { module: 'services', action: 'edit' },
   { module: 'services', action: 'delete' },
+  { module: 'pharmacy', action: 'view' },
+  { module: 'pharmacy', action: 'create' },
+  { module: 'pharmacy', action: 'edit' },
+  { module: 'pharmacy', action: 'delete' },
 ]
 
 const roles = [
@@ -157,7 +161,7 @@ export async function POST(request: NextRequest) {
         { status: 403 }
       )
     }
-    const createdPermissions = await prisma.$transaction(
+    const createdPermissions = await Promise.all(
       permissions.map((p) =>
         prisma.permission.upsert({
           where: { module_action: { module: p.module, action: p.action } },
@@ -167,7 +171,7 @@ export async function POST(request: NextRequest) {
       )
     )
 
-    const createdRoles = await prisma.$transaction(
+    const createdRoles = await Promise.all(
       roles.map((r) =>
         prisma.role.upsert({
           where: { name: r.name },
@@ -179,7 +183,7 @@ export async function POST(request: NextRequest) {
 
     const superAdminRole = createdRoles.find((r) => r.name === 'Super Admin')
     if (superAdminRole) {
-      await prisma.$transaction(
+      await Promise.all(
         createdPermissions.map((p) =>
           prisma.rolePermission.upsert({
             where: {
@@ -264,7 +268,7 @@ export async function POST(request: NextRequest) {
       })
     )
 
-    await prisma.$transaction(
+    await Promise.all(
       expenseCategories.map((c) =>
         prisma.expenseCategory.upsert({
           where: { name: c.name },
@@ -274,7 +278,7 @@ export async function POST(request: NextRequest) {
       )
     )
 
-    await prisma.$transaction(
+    await Promise.all(
       services.map((s) =>
         prisma.service.upsert({
           where: { name: s.name },
@@ -284,7 +288,7 @@ export async function POST(request: NextRequest) {
       )
     )
 
-    await prisma.$transaction(
+    await Promise.all(
       accounts.map((a) =>
         prisma.account.upsert({
           where: { code: a.code },
@@ -294,7 +298,7 @@ export async function POST(request: NextRequest) {
       )
     )
 
-    await prisma.$transaction(
+    await Promise.all(
       defaultSettings.map((s) =>
         prisma.clinicSetting.upsert({
           where: { key: s.key },
