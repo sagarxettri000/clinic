@@ -37,7 +37,7 @@ function LoadingOverlay({ message }: { message?: string }) {
   )
 }
 
-interface SkeletonProps extends React.HTMLAttributes<HTMLDivElement> {}
+type SkeletonProps = React.HTMLAttributes<HTMLDivElement>
 
 function Skeleton({ className, ...props }: SkeletonProps) {
   return (

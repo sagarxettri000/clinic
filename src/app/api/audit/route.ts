@@ -11,7 +11,7 @@ export async function GET(request: NextRequest) {
   const { searchParams } = new URL(request.url)
   const page = Math.max(1, parseInt(searchParams.get('page') || '1'))
   const limit = Math.min(100, Math.max(1, parseInt(searchParams.get('limit') || '20')))
-  const module = searchParams.get('module') || ''
+  const mod = searchParams.get('module') || ''
   const auditUserId = searchParams.get('userId') || ''
   const fromDate = searchParams.get('fromDate') || ''
   const toDate = searchParams.get('toDate') || ''
@@ -19,7 +19,7 @@ export async function GET(request: NextRequest) {
 
   const where: Record<string, unknown> = {}
 
-  if (module) where.module = module
+  if (mod) where.module = mod
   if (auditUserId) where.userId = auditUserId
 
   if (fromDate || toDate) {

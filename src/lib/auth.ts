@@ -65,13 +65,11 @@ export async function getUserIdFromRequest(
     token = match[1]
   }
 
-  let bearerPresent = false
   if (!token) {
     const authHeader = request.headers.get('authorization') || ''
     const bearer = authHeader.match(/^Bearer\s+(.+)$/i)
     if (bearer) {
       token = bearer[1]
-      bearerPresent = true
     }
   }
 
