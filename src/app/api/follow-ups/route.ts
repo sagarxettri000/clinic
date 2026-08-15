@@ -43,13 +43,12 @@ export async function GET(request: NextRequest) {
   if (doctorId) where.doctorId = doctorId
 
   if (search) {
-    const q = search.toLowerCase()
     where.OR = [
-      { followUpNumber: { contains: q } },
-      { reason: { contains: q } },
-      { doctor: { name: { contains: q } } },
-      { patient: { name: { contains: q } } },
-      { diagnosis: { contains: q } },
+      { followUpNumber: { contains: search, mode: 'insensitive' } },
+      { reason: { contains: search, mode: 'insensitive' } },
+      { doctor: { name: { contains: search, mode: 'insensitive' } } },
+      { patient: { name: { contains: search, mode: 'insensitive' } } },
+      { diagnosis: { contains: search, mode: 'insensitive' } },
     ]
   }
 

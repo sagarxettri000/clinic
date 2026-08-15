@@ -26,8 +26,8 @@ export async function GET(request: NextRequest) {
 
   if (search) {
     where.OR = [
-      { invoiceNumber: { contains: search } },
-      { patient: { name: { contains: search } } },
+      { invoiceNumber: { contains: search, mode: 'insensitive' } },
+      { patient: { name: { contains: search, mode: 'insensitive' } } },
     ]
   }
 
