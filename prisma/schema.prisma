@@ -1,0 +1,579 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "sqlite"
+}
+
+model Role {
+  id          String       @id @default(uuid())
+  name        String       @unique
+  description String?
+  isDefault   Int          @default(0)
+  permissions RolePermission[]
+  users       User[]
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+}
+
+model Permission {
+  id          String         @id @default(uuid())
+  module      String
+  action      String
+  description String?
+  roles       RolePermission[]
+  createdAt   DateTime       @default(now())
+
+  @@unique([module, action])
+}
+
+model RolePermission {
+  id           String     @id @default(uuid())
+  roleId       String
+  permissionId String
+  role         Role       @relation(fields: [roleId], references: [id], onDelete: Cascade)
+  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+
+  @@unique([roleId, permissionId])
+}
+
+model User {
+  id            String    @id @default(uuid())
+  name          String
+  email         String    @unique
+  username      String    @unique
+  passwordHash  String
+  phone         String?
+  avatar        String?
+  status        String    @default("ACTIVE")
+  roleId        String?
+  role          Role?     @relation(fields: [roleId], references: [id])
+  lastLoginAt   DateTime?
+  auditLogs     AuditLog[]
+  createdAppointments Appointment[] @relation("CreatedByUser")
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+}
+
+model Patient {
+  id              String    @id @default(uuid())
+  patientId       String    @unique
+  name            String
+  phone           String?
+  email           String?
+  dateOfBirth     DateTime?
+  gender          String?
+  address         String?
+  nationalId      String?
+  emergencyContact String?
+  bloodGroup      String?
+  allergies       String?
+  medicalConditions String?
+  currentMedications String?
+  notes           String?
+  status          String    @default("ACTIVE")
+  appointments    Appointment[]
+  encounters      Encounter[]
+  prescriptions   Prescription[]
+  invoices        Invoice[]
+  payments        Payment[]
+  refunds         Refund[]
+  followUps       FollowUp[]
+  attachments     Attachment[]
+  whatsappMessages WhatsAppMessage[]
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([phone])
+  @@index([name])
+  @@index([nationalId])
+}
+
+model Doctor {
+  id                String    @id @default(uuid())
+  name              String
+  specialization    String?
+  phone             String?
+  email             String?
+  consultationFee   Float     @default(0)
+  revenueSharePercent Float   @default(40)
+  signature         String?
+  profilePhoto      String?
+  notes             String?
+  status            String    @default("ACTIVE")
+  appointments      Appointment[]
+  encounters        Encounter[]
+  prescriptions     Prescription[]
+  followUps         FollowUp[]
+  settlements       DoctorSettlement[]
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@index([name])
+}
+
+model Appointment {
+  id              String          @id @default(uuid())
+  appointmentNumber Int
+  patientId       String
+  doctorId        String
+  appointmentDate DateTime
+  appointmentTime DateTime
+  duration        Int             @default(30)
+  consultationFee Float
+  doctorSharePercent Float
+  status          String          @default("PENDING")
+  paymentStatus   String          @default("UNPAID")
+  paymentMethod   String?
+  notes           String?
+  patient         Patient         @relation(fields: [patientId], references: [id])
+  doctor          Doctor          @relation(fields: [doctorId], references: [id])
+  createdByUserId String?
+  createdByUser   User?           @relation("CreatedByUser", fields: [createdByUserId], references: [id])
+  encounters      Encounter[]
+  payments        Payment[]
+  statusHistory   AppointmentStatusHistory[]
+  invoices        Invoice[]
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  @@unique([appointmentNumber, appointmentDate])
+  @@index([appointmentDate])
+  @@index([doctorId])
+  @@index([patientId])
+}
+
+model AppointmentStatusHistory {
+  id            String     @id @default(uuid())
+  appointmentId String
+  appointment   Appointment @relation(fields: [appointmentId], references: [id], onDelete: Cascade)
+  fromStatus    String?
+  toStatus      String
+  changedBy     String?
+  notes         String?
+  createdAt     DateTime   @default(now())
+}
+
+model Encounter {
+  id                 String        @id @default(uuid())
+  patientId          String
+  doctorId           String
+  appointmentId      String?
+  followUpId         String?
+  encounterDate      DateTime      @default(now())
+  status             String        @default("COMPLETED")
+  chiefComplaint     String?
+  historyOfPresentIllness String?
+  examinationFindings String?
+  clinicalNotes      String?
+  followUpDate       DateTime?
+  additionalInstructions String?
+  patient            Patient       @relation(fields: [patientId], references: [id])
+  doctor             Doctor        @relation(fields: [doctorId], references: [id])
+  appointment        Appointment?  @relation(fields: [appointmentId], references: [id])
+  followUp           FollowUp?     @relation("FollowUpStartedEncounters", fields: [followUpId], references: [id])
+  followUps          FollowUp[]    @relation("FollowUpOriginalEncounter")
+  vitalSigns         VitalSign?
+  diagnoses          Diagnosis[]
+  treatments         Treatment[]
+  services           EncounterService[]
+  prescriptions      Prescription[]
+  invoices           Invoice[]
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+}
+
+model VitalSign {
+  id             String    @id @default(uuid())
+  encounterId    String    @unique
+  encounter      Encounter @relation(fields: [encounterId], references: [id], onDelete: Cascade)
+  bloodPressureSystolic Int?
+  bloodPressureDiastolic Int?
+  pulse          Int?
+  temperature    Float?
+  respiratoryRate Int?
+  spo2           Float?
+  weight         Float?
+  height         Float?
+  bmi            Float?
+  createdAt      DateTime  @default(now())
+}
+
+model Diagnosis {
+  id          String    @id @default(uuid())
+  encounterId String
+  encounter   Encounter @relation(fields: [encounterId], references: [id], onDelete: Cascade)
+  code        String?
+  description String
+  isPrimary   Int       @default(0)
+  createdAt   DateTime  @default(now())
+}
+
+model Treatment {
+  id          String    @id @default(uuid())
+  encounterId String
+  encounter   Encounter @relation(fields: [encounterId], references: [id], onDelete: Cascade)
+  description String
+  notes       String?
+  createdAt   DateTime  @default(now())
+}
+
+model Service {
+  id                 String            @id @default(uuid())
+  name               String            @unique
+  category           String?
+  price              Float             @default(0)
+  isActive           Int               @default(1)
+  encounterServices  EncounterService[]
+  createdAt          DateTime          @default(now())
+}
+
+model EncounterService {
+  id          String    @id @default(uuid())
+  encounterId String
+  encounter   Encounter @relation(fields: [encounterId], references: [id], onDelete: Cascade)
+  serviceId   String
+  service     Service   @relation(fields: [serviceId], references: [id])
+  quantity    Int       @default(1)
+  price       Float     @default(0)
+  notes       String?
+  createdAt   DateTime  @default(now())
+
+  @@index([encounterId])
+}
+
+model Prescription {
+  id             String             @id @default(uuid())
+  prescriptionNumber String
+  patientId      String
+  doctorId       String
+  encounterId    String?
+  followUpId     String?
+  prescriptionDate DateTime         @default(now())
+  diagnosis      String?
+  notes          String?
+  followUpDate   DateTime?
+  patient        Patient            @relation(fields: [patientId], references: [id])
+  doctor         Doctor             @relation(fields: [doctorId], references: [id])
+  encounter      Encounter?         @relation(fields: [encounterId], references: [id])
+  followUp       FollowUp?          @relation(fields: [followUpId], references: [id])
+  items          PrescriptionItem[]
+  followUpsRelated FollowUp[]       @relation("FollowUpRelatedPrescription")
+  createdAt      DateTime           @default(now())
+  updatedAt      DateTime           @updatedAt
+
+  @@index([patientId])
+  @@index([doctorId])
+}
+
+model PrescriptionItem {
+  id              String       @id @default(uuid())
+  prescriptionId  String
+  prescription    Prescription @relation(fields: [prescriptionId], references: [id], onDelete: Cascade)
+  medicineName    String
+  strength        String?
+  dosage          String
+  frequency       String
+  duration        String?
+  route           String?
+  quantity        Int?
+  instructions    String?
+  createdAt       DateTime     @default(now())
+}
+
+model Invoice {
+  id            String        @id @default(uuid())
+  invoiceNumber String        @unique
+  patientId     String
+  appointmentId String?
+  encounterId   String?
+  followUpId    String?
+  invoiceDate   DateTime      @default(now())
+  dueDate       DateTime?
+  description   String?
+  paymentMethod String?
+  subtotal      Float         @default(0)
+  discount      Float         @default(0)
+  taxPercent    Float         @default(0)
+  taxAmount     Float         @default(0)
+  totalAmount   Float         @default(0)
+  paidAmount    Float         @default(0)
+  balance       Float         @default(0)
+  status        String        @default("DRAFT")
+  notes         String?
+  patient       Patient       @relation(fields: [patientId], references: [id])
+  appointment   Appointment?  @relation(fields: [appointmentId], references: [id])
+  encounter     Encounter?    @relation(fields: [encounterId], references: [id])
+  followUp      FollowUp?     @relation(fields: [followUpId], references: [id])
+  items         InvoiceItem[]
+  payments      Payment[]
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  @@index([invoiceNumber])
+  @@index([patientId])
+  @@index([encounterId])
+}
+
+model InvoiceItem {
+  id          String    @id @default(uuid())
+  invoiceId   String
+  invoice     Invoice   @relation(fields: [invoiceId], references: [id], onDelete: Cascade)
+  serviceName String
+  description String?
+  quantity    Int       @default(1)
+  unitPrice   Float
+  discount    Float     @default(0)
+  total       Float
+  createdAt   DateTime  @default(now())
+}
+
+model Payment {
+  id            String        @id @default(uuid())
+  paymentNumber String        @unique
+  patientId     String
+  appointmentId String?
+  invoiceId     String?
+  amount        Float
+  paymentDate   DateTime      @default(now())
+  paymentMethod String
+  referenceNumber String?
+  notes         String?
+  status        String        @default("COMPLETED")
+  patient       Patient       @relation(fields: [patientId], references: [id])
+  appointment   Appointment?  @relation(fields: [appointmentId], references: [id])
+  invoice       Invoice?      @relation(fields: [invoiceId], references: [id])
+  refunds       Refund[]
+  ledgerTransactions LedgerTransaction[] @relation("PaymentLedger")
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  @@index([paymentDate])
+  @@index([patientId])
+}
+
+model Refund {
+  id            String        @id @default(uuid())
+  refundNumber  String        @unique
+  paymentId     String
+  patientId     String
+  amount        Float
+  refundDate    DateTime      @default(now())
+  reason        String
+  refundMethod  String
+  status        String        @default("COMPLETED")
+  payment       Payment       @relation(fields: [paymentId], references: [id])
+  patient       Patient       @relation(fields: [patientId], references: [id])
+  ledgerTransactions LedgerTransaction[] @relation("RefundLedger")
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+
+  @@index([refundDate])
+}
+
+model Expense {
+  id              String          @id @default(uuid())
+  expenseNumber   String          @unique
+  date            DateTime        @default(now())
+  categoryId      String
+  category        ExpenseCategory @relation(fields: [categoryId], references: [id])
+  description     String
+  amount          Float
+  paymentMethod   String
+  supplier        String?
+  notes           String?
+  attachment      String?
+  createdById     String?
+  ledgerTransactions LedgerTransaction[] @relation("ExpenseLedger")
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  @@index([date])
+}
+
+model ExpenseCategory {
+  id          String    @id @default(uuid())
+  name        String    @unique
+  description String?
+  isActive    Int       @default(1)
+  expenses    Expense[]
+  createdAt   DateTime  @default(now())
+}
+
+model Account {
+  id          String              @id @default(uuid())
+  code        String              @unique
+  name        String
+  type        String
+  description String?
+  isActive    Int                 @default(1)
+  transactions LedgerTransaction[]
+  createdAt   DateTime            @default(now())
+}
+
+model LedgerTransaction {
+  id              String         @id @default(uuid())
+  transactionNumber String       @unique
+  date            DateTime       @default(now())
+  description     String
+  debitAmount     Float          @default(0)
+  creditAmount    Float          @default(0)
+  balance         Float          @default(0)
+  accountId       String
+  account         Account        @relation(fields: [accountId], references: [id])
+  category        String?
+  patientId       String?
+  doctorId        String?
+  appointmentId   String?
+  invoiceId       String?
+  paymentId       String?
+  payment         Payment?       @relation("PaymentLedger", fields: [paymentId], references: [id])
+  refundId        String?
+  refund          Refund?        @relation("RefundLedger", fields: [refundId], references: [id])
+  expenseId       String?
+  expense         Expense?       @relation("ExpenseLedger", fields: [expenseId], references: [id])
+  referenceNumber String?
+  notes           String?
+  userId          String?
+  createdAt       DateTime       @default(now())
+
+  @@index([date])
+  @@index([accountId])
+  @@index([patientId])
+}
+
+model DoctorSettlement {
+  id              String    @id @default(uuid())
+  doctorId        String
+  doctor          Doctor    @relation(fields: [doctorId], references: [id])
+  fromDate         DateTime
+  toDate           DateTime
+  totalConsultations Int    @default(0)
+  grossRevenue     Float     @default(0)
+  discounts        Float     @default(0)
+  refunds          Float     @default(0)
+  doctorShare      Float     @default(0)
+  previouslyPaid   Float     @default(0)
+  currentPayable   Float     @default(0)
+  amountPaid       Float     @default(0)
+  remainingPayable Float     @default(0)
+  paymentMethod    String?
+  referenceNumber  String?
+  notes            String?
+  status           String    @default("PENDING")
+  createdAt        DateTime  @default(now())
+  updatedAt        DateTime  @updatedAt
+
+  @@index([doctorId])
+  @@index([fromDate, toDate])
+}
+
+model WhatsAppMessage {
+  id              String            @id @default(uuid())
+  patientId       String?
+  patient         Patient?          @relation(fields: [patientId], references: [id])
+  phoneNumber     String
+  messageType     String
+  templateName    String?
+  content         String
+  status          String            @default("QUEUED")
+  providerMessageId String?
+  deliveredAt     DateTime?
+  errorMessage    String?
+  metadata        String?
+  createdAt       DateTime          @default(now())
+  updatedAt       DateTime          @updatedAt
+
+  @@index([phoneNumber])
+  @@index([status])
+}
+
+model Notification {
+  id          String   @id @default(uuid())
+  type        String
+  title       String
+  message     String
+  userId      String?
+  isRead      Int      @default(0)
+  metadata    String?
+  createdAt   DateTime @default(now())
+}
+
+model Attachment {
+  id          String    @id @default(uuid())
+  patientId   String?
+  patient     Patient?  @relation(fields: [patientId], references: [id])
+  fileName    String
+  filePath    String
+  fileType    String
+  fileSize    Int
+  uploadedById String?
+  createdAt   DateTime  @default(now())
+}
+
+model ClinicSetting {
+  id    String @id @default(uuid())
+  key   String @unique
+  value String
+  type  String @default("STRING")
+  group String @default("general")
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model AuditLog {
+  id          String   @id @default(uuid())
+  userId      String?
+  user        User?    @relation(fields: [userId], references: [id])
+  action      String
+  module      String
+  recordId    String?
+  previousValues String?
+  newValues   String?
+  ipAddress   String?
+  userAgent   String?
+  createdAt   DateTime @default(now())
+
+  @@index([module, recordId])
+  @@index([createdAt])
+}
+
+model FollowUp {
+  id              String    @id @default(uuid())
+  followUpNumber  String    @unique
+  patientId       String
+  doctorId        String
+  encounterId     String?
+  relatedPrescriptionId String?
+  reason          String?
+  objective       String?
+  diagnosis       String?
+  clinicalNotes   String?
+  doctorInstructions String?
+  outcome         String?
+  progress        String?
+  currentSymptoms String?
+  examinationFindings String?
+  diagnosisUpdate String?
+  treatmentResponse String?
+  medicationChanges String?
+  doctorNotes     String?
+  nextAction      String?
+  nextActionDetails String?
+  completedAt     DateTime?
+  createdById     String?
+  patient         Patient            @relation(fields: [patientId], references: [id])
+  doctor          Doctor             @relation(fields: [doctorId], references: [id])
+  encounter       Encounter?         @relation("FollowUpOriginalEncounter", fields: [encounterId], references: [id])
+  relatedPrescription Prescription?   @relation("FollowUpRelatedPrescription", fields: [relatedPrescriptionId], references: [id])
+  encounters      Encounter[]        @relation("FollowUpStartedEncounters")
+  prescriptions   Prescription[]
+  invoices        Invoice[]
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  @@index([patientId])
+  @@index([doctorId])
+}
