@@ -11,6 +11,15 @@ const eslintConfig = defineConfig([
       "react-hooks/immutability": "warn",
     },
   },
+  {
+    files: ["tests/**/*.js"],
+    languageOptions: {
+      globals: { require: "readonly", module: "readonly", process: "readonly", console: "readonly", __dirname: "readonly" },
+    },
+    rules: {
+      "@typescript-eslint/no-require-imports": "off",
+    },
+  },
   // Override default ignores of eslint-config-next.
   globalIgnores([
     // Default ignores of eslint-config-next:
