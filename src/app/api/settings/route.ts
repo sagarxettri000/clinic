@@ -54,14 +54,7 @@ export async function GET(request: NextRequest) {
       settingsMap[s.key] = s.value
     })
 
-    return NextResponse.json(
-      { success: true, data: settingsMap },
-      {
-        headers: {
-          'Cache-Control': 'public, s-maxage=300, max-age=60, stale-while-revalidate=300',
-        },
-      }
-    )
+    return NextResponse.json({ success: true, data: settingsMap })
   } catch (error) {
     console.error('Get settings error:', error)
     return NextResponse.json(
