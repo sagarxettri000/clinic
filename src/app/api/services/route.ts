@@ -27,7 +27,14 @@ export async function GET(request: NextRequest) {
     orderBy: [{ category: 'asc' }, { name: 'asc' }],
   })
 
-  return NextResponse.json({ services })
+  return NextResponse.json(
+    { services },
+    {
+      headers: {
+        'Cache-Control': 'public, s-maxage=600, max-age=120, stale-while-revalidate=600',
+      },
+    }
+  )
 }
 
 export async function POST(request: NextRequest) {

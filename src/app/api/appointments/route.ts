@@ -48,15 +48,22 @@ export async function GET(request: NextRequest) {
     prisma.appointment.count({ where }),
   ])
 
-  return NextResponse.json({
-    appointments,
-    pagination: {
-      page,
-      limit,
-      total,
-      totalPages: Math.ceil(total / limit),
+  return NextResponse.json(
+    {
+      appointments,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+      },
     },
-  })
+    {
+      headers: {
+        'Cache-Control': 'private, s-maxage=60, max-age=15, stale-while-revalidate=60',
+      },
+    }
+  )
 }
 
 export async function POST(request: NextRequest) {

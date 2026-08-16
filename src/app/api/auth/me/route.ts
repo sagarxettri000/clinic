@@ -37,14 +37,21 @@ export async function GET(request: NextRequest) {
       action: rp.permission.action,
     })) ?? []
 
-  return NextResponse.json({
-    success: true,
-    data: {
-      id: user.id,
-      name: user.name,
-      email: user.email,
-      role: user.role?.name ?? null,
-      permissions,
+  return NextResponse.json(
+    {
+      success: true,
+      data: {
+        id: user.id,
+        name: user.name,
+        email: user.email,
+        role: user.role?.name ?? null,
+        permissions,
+      },
     },
-  })
+    {
+      headers: {
+        'Cache-Control': 'private, max-age=30, stale-while-revalidate=60',
+      },
+    }
+  )
 }
