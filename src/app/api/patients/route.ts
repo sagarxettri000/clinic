@@ -43,15 +43,18 @@ export async function GET(request: NextRequest) {
     prisma.patient.count({ where }),
   ])
 
-  return NextResponse.json({
-    patients,
-    pagination: {
-      page,
-      limit,
-      total,
-      totalPages: Math.ceil(total / limit),
+  return NextResponse.json(
+    {
+      patients,
+      pagination: {
+        page,
+        limit,
+        total,
+        totalPages: Math.ceil(total / limit),
+      },
     },
-  })
+    { headers: { 'Cache-Control': 'private, max-age=15, stale-while-revalidate=15' } }
+  )
 }
 
 export async function POST(request: NextRequest) {

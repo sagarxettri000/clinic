@@ -30,7 +30,10 @@ export async function GET(request: NextRequest) {
     orderBy: [{ category: 'asc' }, { name: 'asc' }],
   })
 
-  return NextResponse.json({ services })
+  return NextResponse.json(
+    { services },
+    { headers: { 'Cache-Control': 'private, max-age=15, stale-while-revalidate=15' } }
+  )
 }
 
 export async function POST(request: NextRequest) {
