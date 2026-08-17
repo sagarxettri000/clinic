@@ -1,0 +1,12 @@
+node_modules
+dist
+dist-win
+release
+electron
+scripts
+.github
+*.exe
+*.db
+*.sqlite
+.git
+.vercel
