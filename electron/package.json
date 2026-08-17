@@ -1,0 +1,7 @@
+{
+  "name": "clinic-manager",
+  "version": "1.0.0",
+  "description": "Clinic Manager - desktop app",
+  "author": "Clinic Team",
+  "main": "main.js"
+}

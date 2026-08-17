@@ -10,7 +10,10 @@
     "typecheck": "tsc --noEmit",
     "test:regression": "node tests/regression.test.js",
     "test:pharmacy": "node tests/pharmacy.test.js",
-    "test:api": "node tests/regression.test.js && node tests/pharmacy.test.js"
+    "test:api": "node tests/regression.test.js && node tests/pharmacy.test.js",
+    "electron:start": "electron .",
+    "electron:build": "electron-builder --win --mac --linux",
+    "dist": "electron-builder --win --mac --linux"
   },
   "dependencies": {
     "@prisma/adapter-better-sqlite3": "^7.9.1",
@@ -57,10 +60,45 @@
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/uuid": "^10.0.0",
+    "electron": "^43.4.0",
+    "electron-builder": "^26.15.3",
     "eslint": "^9",
     "eslint-config-next": "16.3.0",
     "tailwindcss": "^4",
     "tailwindcss-animate": "^1.0.7",
-    "typescript": "^5"
+    "typescript": "^5",
+    "electron": "^34.0.0",
+    "electron-builder": "^26.0.0"
+  },
+  "build": {
+    "appId": "com.clinic.app",
+    "productName": "Clinic Manager",
+    "directories": { "buildResources": "electron" },
+    "files": ["electron/main.js", "electron/icon.*"],
+    "extraMetadata": { "main": "electron/main.js" },
+    "npmRebuild": false,
+    "asar": true,
+    "directories": {
+      "app": "electron",
+      "buildResources": "electron"
+    },
+    "files": ["main.js", "icon.*"],
+    "extraMetadata": { "main": "main.js" },
+    "win": {
+      "target": ["nsis", "portable"],
+      "icon": "icon.ico"
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true,
+      "createDesktopShortcut": true
+    },
+    "mac": {
+      "target": ["dmg", "zip"],
+      "category": "com.healthcare.medical"
+    },
+    "linux": {
+      "target": ["AppImage", "deb"]
+    }
   }
 }
