@@ -56,13 +56,13 @@ export async function GET(request: NextRequest) {
     prisma.medicine.count({ where: { isActive: 1, stockQuantity: 0 } }),
   ])
 
-  return NextResponse.json(
-    {
+  return new Response(
+    JSON.stringify({
       medicines,
       pagination: { page, limit, total, totalPages: Math.ceil(total / limit) },
       summary: { lowStockCount, outOfStockCount },
-    },
-    { headers: { 'Cache-Control': 'private, max-age=15, stale-while-revalidate=15' } }
+    }),
+    { status: 200, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'private, max-age=15, stale-while-revalidate=15' } }
   )
 }
 

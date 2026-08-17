@@ -57,9 +57,9 @@ export async function GET(request: NextRequest) {
       settingsMap[s.key] = s.value
     })
 
-    return NextResponse.json(
-      { success: true, data: settingsMap },
-      { headers: { 'Cache-Control': 'private, max-age=15, stale-while-revalidate=15' } }
+    return new Response(
+      JSON.stringify({ success: true, data: settingsMap }),
+      { status: 200, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'private, max-age=15, stale-while-revalidate=15' } }
     )
   } catch (error) {
     console.error('Get settings error:', error)

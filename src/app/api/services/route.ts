@@ -30,9 +30,9 @@ export async function GET(request: NextRequest) {
     orderBy: [{ category: 'asc' }, { name: 'asc' }],
   })
 
-  return NextResponse.json(
-    { services },
-    { headers: { 'Cache-Control': 'private, max-age=15, stale-while-revalidate=15' } }
+  return new Response(
+    JSON.stringify({ services }),
+    { status: 200, headers: { 'Content-Type': 'application/json', 'Cache-Control': 'private, max-age=15, stale-while-revalidate=15' } }
   )
 }
 
