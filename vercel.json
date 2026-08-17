@@ -1,6 +1,10 @@
 {
   "framework": "nextjs",
-  "regions": ["syd1"],
+  "functions": {
+    "src/app/api/**/*.ts": {
+      "regions": ["syd1"]
+    }
+  },
   "headers": [
     {
       "source": "/(.*)",
