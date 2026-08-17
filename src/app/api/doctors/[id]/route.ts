@@ -3,6 +3,7 @@ import { prisma } from '@/lib/db'
 import { doctorSchema } from '@/lib/validators'
 import { requirePermission } from '@/lib/permissions'
 import { writeAuditLog } from '@/lib/audit'
+import { revalidateTag } from 'next/cache'
 
 export async function GET(
   request: NextRequest,
@@ -112,6 +113,8 @@ export async function PUT(
     newValues: result.data,
   })
 
+  revalidateTag('doctors', 'max')
+
   return NextResponse.json(doctor)
 }
 
@@ -143,6 +146,8 @@ export async function DELETE(
     recordId: id,
     previousValues: { name: existing.name },
   })
+
+  revalidateTag('doctors', 'max')
 
   return NextResponse.json({ message: 'Doctor deactivated', doctor })
 }

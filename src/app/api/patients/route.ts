@@ -4,6 +4,9 @@ import { patientSchema } from '@/lib/validators'
 import { generateId } from '@/lib/utils'
 import { requirePermission } from '@/lib/permissions'
 import { writeAuditLog } from '@/lib/audit'
+import { revalidateTag } from 'next/cache'
+
+export const revalidate = 30
 
 export async function GET(request: NextRequest) {
   const auth = await requirePermission(request, 'patients', 'view')
@@ -106,6 +109,8 @@ export async function POST(request: NextRequest) {
     recordId: patient.id,
     newValues: { name: patient.name, phone: patient.phone, patientId: patient.patientId },
   })
+
+  revalidateTag('patients', 'max')
 
   return NextResponse.json(patient, { status: 201 })
 }

@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
 import { requirePermission } from '@/lib/permissions'
 import { writeAuditLog } from '@/lib/audit'
+import { revalidateTag } from 'next/cache'
+
+export const revalidate = 60
 
 const ALLOWED_SETTING_KEYS = new Set([
   'clinic_name',
@@ -114,6 +117,8 @@ export async function PUT(request: NextRequest) {
       module: 'settings',
       newValues: auditValues,
     })
+
+    revalidateTag('settings', 'max')
 
     return NextResponse.json({ success: true, data: settingsMap })
   } catch (error) {

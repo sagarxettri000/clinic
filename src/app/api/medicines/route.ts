@@ -3,6 +3,9 @@ import { prisma } from '@/lib/db'
 import { medicineSchema } from '@/lib/validators'
 import { requirePermission } from '@/lib/permissions'
 import { writeAuditLog } from '@/lib/audit'
+import { revalidateTag } from 'next/cache'
+
+export const revalidate = 30
 
 export async function GET(request: NextRequest) {
   const auth = await requirePermission(request, 'pharmacy', 'view')
@@ -135,6 +138,8 @@ export async function POST(request: NextRequest) {
     recordId: medicine.id,
     newValues: { name: medicine.name, stockQuantity: medicine.stockQuantity },
   })
+
+  revalidateTag('medicines', 'max')
 
   return NextResponse.json(medicine, { status: 201 })
 }

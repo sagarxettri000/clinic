@@ -4,6 +4,9 @@ import { requirePermission } from '@/lib/permissions'
 import { appointmentSchema } from '@/lib/validators'
 import { getNextAppointmentNumber } from '@/lib/db-utils'
 import { writeAuditLog } from '@/lib/audit'
+import { revalidateTag } from 'next/cache'
+
+export const revalidate = 30
 
 export async function GET(request: NextRequest) {
   const auth = await requirePermission(request, 'appointments', 'view')
@@ -165,6 +168,8 @@ export async function POST(request: NextRequest) {
     recordId: appointment.id,
     newValues: { appointmentNumber, patientId: data.patientId, doctorId: data.doctorId, status: 'PENDING' },
   })
+
+  revalidateTag('appointments', 'max')
 
   return NextResponse.json(appointment, { status: 201 })
 }

@@ -2,6 +2,9 @@ import { NextRequest, NextResponse } from 'next/server'
 import { prisma } from '@/lib/db'
 import { requirePermission } from '@/lib/permissions'
 import { writeAuditLog } from '@/lib/audit'
+import { revalidateTag } from 'next/cache'
+
+export const revalidate = 60
 
 export async function GET(request: NextRequest) {
   const auth = await requirePermission(request, 'encounters', 'view')
@@ -70,6 +73,8 @@ export async function POST(request: NextRequest) {
     recordId: service.id,
     newValues: { name: service.name, price },
   })
+
+  revalidateTag('services', 'max')
 
   return NextResponse.json(service, { status: 201 })
 }

@@ -3,6 +3,9 @@ import { prisma } from '@/lib/db'
 import { doctorSchema } from '@/lib/validators'
 import { requirePermission } from '@/lib/permissions'
 import { writeAuditLog } from '@/lib/audit'
+import { revalidateTag } from 'next/cache'
+
+export const revalidate = 30
 
 export async function GET(request: NextRequest) {
   const auth = await requirePermission(request, 'doctors', 'view')
@@ -93,6 +96,8 @@ export async function POST(request: NextRequest) {
     recordId: doctor.id,
     newValues: { name: data.name, specialization: data.specialization || null },
   })
+
+  revalidateTag('doctors', 'max')
 
   return NextResponse.json(doctor, { status: 201 })
 }
