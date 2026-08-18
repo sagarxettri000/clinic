@@ -196,8 +196,8 @@ export default function SettingsPage() {
       {activeTab === "clinic" && (
         <Card>
           <CardHeader>
-            <CardTitle className="text-base">Clinic Information</CardTitle>
-            <CardDescription>Basic information about your clinic</CardDescription>
+<CardTitle className="text-base">Swasthya-Clinic Information</CardTitle>
+          <CardDescription>Basic information about your clinic</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">
             <div className="grid gap-4 sm:grid-cols-2">

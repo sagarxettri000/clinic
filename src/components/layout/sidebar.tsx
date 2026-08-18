@@ -31,6 +31,7 @@ import {
   X,
   LogOut,
   Activity,
+  Info,
 } from "lucide-react"
 import { cn } from "@/lib/utils"
 import { useAuth } from "@/contexts/auth-context"
@@ -215,8 +216,10 @@ export function Sidebar({ open, onClose }: SidebarProps) {
         )}
       >
         <div className="flex h-16 items-center gap-2 border-b px-6">
-          <Activity className="h-7 w-7 text-teal-600" />
-          <span className="text-lg font-bold text-gray-900">ClinicMS</span>
+          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-teal-500 to-blue-600">
+            <Activity className="h-4 w-4 text-white" />
+          </div>
+          <span className="text-lg font-bold text-gray-900">Swasthya-Clinic</span>
           <button
             onClick={onClose}
             className="ml-auto rounded-md p-1 text-gray-400 hover:text-gray-600 lg:hidden"
@@ -266,6 +269,17 @@ export function Sidebar({ open, onClose }: SidebarProps) {
             </div>
           ))}
         </nav>
+
+        <div className="border-t px-3 py-2">
+          <a
+            href="/about"
+            onClick={onClose}
+            className="flex items-center gap-2 rounded-lg px-3 py-2 text-xs text-gray-400 hover:bg-gray-50 hover:text-gray-600"
+          >
+            <Info className="h-3.5 w-3.5" />
+            <span>About Swasthya-Clinic</span>
+          </a>
+        </div>
 
         <div className="border-t p-4">
           <div className="flex items-center gap-3">

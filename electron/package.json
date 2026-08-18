@@ -1,7 +1,7 @@
 {
-  "name": "clinic-manager",
+  "name": "swasthya-clinic",
   "version": "1.0.0",
-  "description": "Clinic Manager - desktop app",
-  "author": "Clinic Team",
+  "description": "Swasthya-Clinic - Manage Health, Care Better",
+  "author": "Swasthya-Clinic Team",
   "main": "main.js"
 }

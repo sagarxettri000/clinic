@@ -2,7 +2,7 @@ const { app, BrowserWindow, Menu, dialog, shell } = require('electron')
 const path = require('path')
 
 const APP_VERSION = '1.0.0'
-const APP_NAME = 'Clinic Manager'
+const APP_NAME = 'Swasthya-Clinic'
 const PROJECT_URL = 'https://github.com/sagarxettri000/clinic'
 const PROD_URL = 'https://clinic-oalxk3jsa-lakd.vercel.app'
 
@@ -31,8 +31,8 @@ function showAbout() {
     type: 'info',
     message: `${APP_NAME} v${APP_VERSION}`,
     detail: [
-      'Clinic Manager',
-      'A complete clinic management application.',
+      'Swasthya-Clinic',
+      'Manage Health, Care Better',
       '',
       'Source code:',
       PROJECT_URL,
@@ -54,9 +54,9 @@ function showAbout() {
 
 const template = [
   {
-    label: 'Clinic',
+    label: 'Swasthya-Clinic',
     submenu: [
-      { label: 'About Clinic Manager', click: showAbout },
+      { label: 'About Swasthya-Clinic', click: showAbout },
       { type: 'separator' },
       { role: 'reload', accelerator: 'CmdOrCtrl+R' },
       { role: 'forceReload' },

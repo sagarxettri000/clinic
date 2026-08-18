@@ -117,7 +117,7 @@ const accounts = [
 ]
 
 const defaultSettings = [
-  { key: 'clinic_name', value: 'My Clinic', type: 'STRING', group: 'general' },
+  { key: 'clinic_name', value: 'Swasthya-Clinic', type: 'STRING', group: 'general' },
   { key: 'clinic_phone', value: '+977-1-5551234', type: 'STRING', group: 'contact' },
   { key: 'clinic_email', value: 'info@clinic.com', type: 'STRING', group: 'contact' },
   { key: 'clinic_address', value: 'Baneshwor, Kathmandu', type: 'STRING', group: 'contact' },

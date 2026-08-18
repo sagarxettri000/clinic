@@ -3,9 +3,9 @@ import "./globals.css"
 import { AppLayout } from "@/components/layout/app-layout"
 
 export const metadata: Metadata = {
-  title: "Clinic Management System",
+  title: "Swasthya-Clinic",
   description:
-    "A comprehensive clinic management system for managing patients, appointments, billing, and medical records.",
+    "Manage Health, Care Better - A comprehensive clinic management system for managing patients, appointments, billing, and medical records.",
 }
 
 export default function RootLayout({

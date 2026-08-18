@@ -1,5 +1,5 @@
 {
-  "name": "clinic",
+  "name": "swasthya-clinic",
   "version": "0.1.0",
   "private": true,
   "scripts": {
@@ -71,8 +71,8 @@
     "electron-builder": "^26.0.0"
   },
   "build": {
-    "appId": "com.clinic.app",
-    "productName": "Clinic Manager",
+    "appId": "com.swasthya.clinic",
+    "productName": "Swasthya-Clinic",
     "directories": { "buildResources": "electron" },
     "files": ["electron/main.js", "electron/icon.*"],
     "extraMetadata": { "main": "electron/main.js" },

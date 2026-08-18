@@ -34,12 +34,12 @@ export default function LoginPage() {
     <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-teal-50 via-white to-blue-50 p-4">
       <div className="w-full max-w-md">
         <div className="mb-8 text-center">
-          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-teal-600 shadow-lg shadow-teal-200">
+          <div className="mx-auto mb-4 flex h-16 w-16 items-center justify-center rounded-2xl bg-gradient-to-br from-teal-500 to-blue-600 shadow-lg shadow-teal-200">
             <Activity className="h-8 w-8 text-white" />
           </div>
-          <h1 className="text-2xl font-bold text-gray-900">ClinicMS</h1>
+          <h1 className="text-2xl font-bold text-gray-900">Swasthya-Clinic</h1>
           <p className="mt-1 text-sm text-gray-500">
-            Clinic Management System
+            Manage Health, Care Better
           </p>
         </div>
 
@@ -147,7 +147,7 @@ export default function LoginPage() {
         </div>
 
         <p className="mt-6 text-center text-xs text-gray-400">
-          &copy; {new Date().getFullYear()} ClinicMS. All rights reserved.
+          &copy; {new Date().getFullYear()} Swasthya-Clinic. All rights reserved.
         </p>
       </div>
     </div>

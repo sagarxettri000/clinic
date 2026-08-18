@@ -71,7 +71,7 @@ function AppLayoutInner({ children }: { children: React.ReactNode }) {
 
   if (pathname === "/login" || !user) return <>{children}</>
 
-  const title = pageTitles[pathname] || "Clinic Management System"
+  const title = pageTitles[pathname] || "Swasthya-Clinic"
 
   return (
     <div className="flex h-screen overflow-hidden bg-gray-50">
