@@ -4,7 +4,7 @@ const path = require('path')
 const APP_VERSION = '1.0.0'
 const APP_NAME = 'Swasthya-Clinic'
 const PROJECT_URL = 'https://github.com/sagarxettri000/clinic'
-const PROD_URL = 'https://clinic-oalxk3jsa-lakd.vercel.app'
+const PROD_URL = 'https://clinic-7hsliu1g2-lakd.vercel.app'
 
 function createWindow() {
   const win = new BrowserWindow({
