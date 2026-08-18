@@ -20,6 +20,7 @@ function createWindow() {
     },
     autoHideMenuBar: true,
     titleBarStyle: process.platform === 'darwin' ? 'hidden' : 'normal',
+    icon: path.join(__dirname, 'icon.ico'),
   })
 
   win.loadURL(PROD_URL)
