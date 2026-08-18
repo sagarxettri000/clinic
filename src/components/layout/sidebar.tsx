@@ -216,9 +216,7 @@ export function Sidebar({ open, onClose }: SidebarProps) {
         )}
       >
         <div className="flex h-16 items-center gap-2 border-b px-6">
-          <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-teal-500 to-blue-600">
-            <Activity className="h-4 w-4 text-white" />
-          </div>
+          <img src="/logo.png" alt="Swasthya-Clinic" className="h-8 w-8 rounded-lg object-contain" />
           <span className="text-lg font-bold text-gray-900">Swasthya-Clinic</span>
           <button
             onClick={onClose}
