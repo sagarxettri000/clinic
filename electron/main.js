@@ -15,15 +15,33 @@ function createWindow() {
     webPreferences: {
       nodeIntegration: false,
       contextIsolation: true,
-      sandbox: true,
+      sandbox: false,
       webSecurity: true,
+      zoomFactor: 1.0,
     },
-    autoHideMenuBar: true,
+    autoHideMenuBar: false,
     titleBarStyle: process.platform === 'darwin' ? 'hidden' : 'normal',
     icon: path.join(__dirname, 'icon.ico'),
   })
 
   win.loadURL(PROD_URL)
+
+  win.webContents.on('before-input-event', (event, input) => {
+    if (input.control && input.key === '=') {
+      event.preventDefault()
+      const current = win.webContents.getZoomFactor()
+      win.webContents.setZoomFactor(Math.min(current + 0.1, 3.0))
+    }
+    if (input.control && input.key === '-') {
+      event.preventDefault()
+      const current = win.webContents.getZoomFactor()
+      win.webContents.setZoomFactor(Math.max(current - 0.1, 0.3))
+    }
+    if (input.control && input.key === '0') {
+      event.preventDefault()
+      win.webContents.setZoomFactor(1.0)
+    }
+  })
 }
 
 function showAbout() {
